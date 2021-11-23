@@ -29,8 +29,17 @@ namespace ApiPostgresReact
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
             services.AddDbContext<DataContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("Default")));
+                options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+            
+            
+            //                options.UseNpgsql(Configuration.GetConnectionString("Default")));
+
 
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
 
@@ -46,6 +55,8 @@ namespace ApiPostgresReact
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -53,7 +64,6 @@ namespace ApiPostgresReact
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiPostgresReact v1"));
             }
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
