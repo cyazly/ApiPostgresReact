@@ -40,7 +40,7 @@ namespace ApiPostgresReact.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto productDto)
+        public async Task<IActionResult> CreateProduct([FromBody]CreateProductDto productDto)
         {
             var product = new Product()
             {
@@ -49,8 +49,8 @@ namespace ApiPostgresReact.Controllers
                 CreatedDate = DateTime.Now
             };
 
-            await _productRepository.Add(product);
-            return Ok();
+             await _productRepository.Add(product);
+             return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -67,7 +67,8 @@ namespace ApiPostgresReact.Controllers
             {
                 Id = id,
                 Name = productDto.Name,
-                Price = productDto.Price
+                Price = productDto.Price,
+                CreatedDate = DateTime.Now
             };
 
             await _productRepository.Update(product);

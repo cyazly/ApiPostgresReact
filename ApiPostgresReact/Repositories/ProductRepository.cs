@@ -26,10 +26,11 @@ namespace ApiPostgresReact.Repositories
             return await _dataContext.Products.ToListAsync();
         }
 
-        public async Task Add(Product product)
+        public async Task  Add(Product product)
         {
             _dataContext.Products.Add(product);
             await _dataContext.SaveChangesAsync();
+             
         }
 
         public async Task Delete(int id)
