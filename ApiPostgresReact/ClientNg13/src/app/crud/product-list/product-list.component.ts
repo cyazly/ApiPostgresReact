@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CRUDService} from "../services/crud.service";
 
 @Component({
   selector: 'app-product-list',
@@ -8,20 +9,46 @@ import { Component, OnInit } from '@angular/core';
 export class ProductListComponent implements OnInit {
 
   columnDefs = [
-    { field: 'make' },
-    { field: 'model' },
-    { field: 'price'}
+    { field: 'id', headerName:'Id' , sortable:true},
+    { field: 'name' , headerName:'Product Name' },
+    { field: 'price' , headerName:'Price', sortable:true},
+    { field: 'createdDate', headerName:'Created Date'},
+    {field: '', headerName: 'Actions', cellRenderer:this.actionRender, width:250}
   ];
 
-  rowData = [
-    { make: 'Toyota', model: 'Celica', price: 35000 },
-    { make: 'Ford', model: 'Mondeo', price: 32000 },
-    { make: 'Porsche', model: 'Boxter', price: 72000 }
-  ];
+  rowData: any = [];
 
-  constructor() { }
+  gridOptions ={
+    rowHeight: 50
+  };
+  producList: any = [];
+  productListSubscribe: any;
+  constructor(private crudService: CRUDService) { }
 
   ngOnInit(): void {
+    this.getProductList();
+  }
+
+  getProductList(){
+
+    this.productListSubscribe = this.crudService.loadProducts().subscribe(res => {
+      this.producList = res;
+
+      this.rowData = res;
+      console.log('res',res)
+    })
+  }
+
+  actionRender(params: any){
+
+    let div = document.createElement('div');
+    let htmlCode = '    <button type="button" class="btn btn-success">View</button>\n' +
+      '    <button type="button" class="btn btn-danger">Delete</button>\n' +
+      '    <button type="button" class="btn btn-warning">Edit</button>'
+
+    div.innerHTML = htmlCode;
+
+    return div;
   }
 
 }
